@@ -1,0 +1,147 @@
+set encoding=UTF-8
+set nocompatible
+filetype off
+
+"Plugin
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'preservim/nerdtree'
+Plugin 'morhetz/gruvbox'
+Plugin 'luochen1990/rainbow'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plugin 'mhinz/vim-startify'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'Yggdroot/indentLine.git'
+Plugin 'AndrewRadev/tagalong.vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-surround'
+Plugin 'mattn/emmet-vim'
+Plugin 'jreybert/vimagit'
+
+call vundle#end()
+filetype plugin on
+filetype plugin indent on
+
+set display+=lastline
+set linebreak
+set scrolloff=1
+set sidescrolloff=5
+syntax enable
+set wrap
+
+set laststatus=2
+set ruler
+set wildmenu
+set tabpagemax=50
+set termguicolors
+colorscheme gruvbox
+set cursorline
+set number
+set noerrorbells
+set visualbell
+set mouse=a
+set title
+set background=dark
+set confirm
+set noshowmode
+let g:rainbow_active = 1
+
+let g:airline_theme='violet'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_powerline_fonts = 1
+
+set smartindent
+set autoindent
+filetype on
+filetype indent on
+set expandtab
+set shiftround
+set shiftwidth=4
+set smarttab
+set tabstop=4
+
+set hlsearch
+set ignorecase
+set incsearch
+set smartcase
+
+set splitbelow
+set splitright
+
+set ttyfast
+set complete-=i
+set lazyredraw
+
+function! s:gitModified()
+    let files = systemlist('git ls-files -m 2>/dev/null')
+    return map(files, "{'line': v:val, 'path': v:val}")
+endfunction
+
+function! s:gitUntracked()
+    let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
+    return map(files, "{'line': v:val, 'path': v:val}")
+endfunction
+
+let g:startify_lists = [
+        \ { 'type': 'files',     'header': ['   MRU']            },
+        \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+        \ { 'type': 'sessions',  'header': ['   Sessions']       },
+        \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+        \ { 'type': function('s:gitModified'),  'header': ['   git modified']},
+        \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
+        \ { 'type': 'commands',  'header': ['   Commands']       },
+        \ ]
+
+let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_setColors = 0
+
+let g:tagalong_verbose = 1
+
+" Runner CTRL + g
+function! Executar(arq)
+  :w
+  if &filetype == 'python'
+    :exec '!pypy' a:arq '|| python3' a:arq
+  elseif &filetype == 'javascript'
+    :exec '!node' a:arq
+  elseif &filetype == 'c'
+    :exec '!gcc' a:arq
+  elseif &filetype == 'rust'
+    :exec "!cargo-fmt"
+    :exec '!cargo-clippy && cargo run || cargo run || rustc' a:arq
+  elseif &filetype == 'typescript'
+    :exec '!tsc -w' a:arq
+  elseif &filetype == 'cpp'
+    :exec '!clang++' a:arq '|| g++' a:arq
+  elseif &filetype == 'php'
+    :exec '!php' a:arq
+  elseif &filetype == 'java'
+    :exec '!javac' a:arq
+  elseif &filetype == 'cs'
+    :exec '!dotnet run'
+  elseif &filetype == 'matlab'
+    :exec '!gcc `gnustep-config --objc-flags` -lgnustep-base' a:arq
+  elseif &filetype == 'swift'
+    :exec '!swift' a:arq
+  elseif &filetype == 'perl'
+    :exec '!perl' a:arq
+  elseif &filetype == 'sh'
+    :exec '!bash' a:arq
+  elseif &filetype == "lisp"
+    :exec "!sbcl --script" a:arq
+  elseif &filetype == "prolog"
+    :exec "!swipl" a:arq
+  elseif &filetype == "haskell"
+    :exec "!stack run || cabal run || ghc" a:arq
+  elseif &filetype == "elixir"
+    :exec "!elixir" a:arq
+  endif
+endfunction
+noremap <C-g> :call Executar(shellescape(@%, 1))<CR>

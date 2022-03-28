@@ -1,5 +1,5 @@
 # .vimrc
-My simple .vimrc file.
+<p> My simple .vimrc file. <img img src="https://media.giphy.com/media/12oufCB0MyZ1Go/giphy.gif" width="30"></p>
 
 It is worth remembering that I use Vundle to install the plugins. If you don't have it on your machine, see how to install it below using Git.
 

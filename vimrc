@@ -143,5 +143,6 @@ function! Executar(arq)
   elseif &filetype == "elixir"
     :exec "!elixir" a:arq
   endif
+
 endfunction
 noremap <C-g> :call Executar(shellescape(@%, 1))<CR>
